@@ -1,0 +1,27 @@
+<!-- 회원가입 -->
+<div class="p-3 border rounded rounded-2">
+    <form id="join-form" action="/auth/join" method="post">
+      <div class="mb-3">
+        <label for="join-email" class="form-label">아이디(이메일)</label>
+        <input type="email" class="form-control"  name="email" placeholder="아이디를 작성해 주세요." aria-describedby="emailHelp">
+        <div id="emailHelp" class="form-text">이메일 주소는 아이디로 사용이 됩니다.</div>
+      <div>
+      <div class="mb-3">
+        <label for="join-nick" class="form-label">닉네임</label>
+        <input type="text" class="form-control"  name="nick"  placeholder="사용할 닉네임을 작성해 주세요." aria-label="default input example">
+        <div id="textHelp" class="form-text">사이트에서 보여지는 별칭입니다.</div>
+      </div>
+      <div class="mb-3">
+        <label for="join-password" class="form-label">비밀번호</label>
+        <input type="password" class="form-control" placeholder="****"  name="password">
+        <div id="passwordlHelp" class="form-text">영문, 숫자 포함 8자 이상 작성바랍니다.</div>
+      </div>
+      <% if (locals.joinError) { %>
+        <div class="mb-3">
+          <p id="join-error"> <%= locals.joinError %> </p>
+        </div>
+      <% } %>
+      <button id="join-btn" type="submit" class="btn btn-primary">회원가입</button>
+    </form>
+  </div>
+  <!-- / 회원가입 -->
