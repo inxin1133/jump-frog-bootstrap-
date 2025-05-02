@@ -1,13 +1,13 @@
 require('dotenv').config();
 const express = require('express');
 const expressLayouts = require("express-ejs-layouts");
-// const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const path = require('path');
 const session = require('express-session');
 const flash = require('connect-flash');
 const asyncHandler = require("express-async-handler");
-// const passport = require('passport');
+const passport = require('passport');
 // const methodOverride = require("method-override");
 
 
@@ -15,12 +15,14 @@ const asyncHandler = require("express-async-handler");
 // DB의 연결을 도와줌
 const { sequelize } = require('./models');
 
+// 서비스를 사용할 수 있게끔 해주는 여권 같은 역할을 하는 모듈
+// 세션과 쿠키 처리 등 복잡한 잡업이 많으므로 검증된 모듈을 사용 - passport
 // require('./passport') 는 require('./passport/index.js')와 동일함
-// const passportConfig = require('./passport');
+const passportConfig = require('./passport');
 
 const app = express();
 sequelize.sync();
-// passportConfig(passport);
+passportConfig(passport);
 
 
 
@@ -43,8 +45,7 @@ app.use(morgan('combined')); // mode 옵션 : common, combined, dev, short, ...E
 // app.use('/img', express.static(path.join(__dirname, 'uploads')));
 
 
-// 쿠키파서 미들웨어 사용 
-// app.use(cookieParser());
+
 
 // 메소드 오버라이드를 이용해 GET, POST 요청을 PUT, DELETE로 전환하여 사용하도록 함
 // 사용할 때 "_method" 이런 방식으로 사용할 것이라고 선언
@@ -52,10 +53,12 @@ app.use(morgan('combined')); // mode 옵션 : common, combined, dev, short, ...E
 
 // 본문 요청 내용이나 다양한 정보(body 등)를 파싱
 app.use(express.json());
+// POST 요청에서 본문(body) 정보를 req 객체에 올려서 보내는 역할 
+// 예) req.body.username  req.body.password
 app.use(express.urlencoded({ extended: true }));
-
-// app.use(cookieParser(process.env.COOKIE_SECRET));
-
+// 쿠키파서 미들웨어 사용
+app.use(cookieParser(process.env.COOKIE_SECRET));
+// 세션 설정
 app.use(session({
     resave: false,
     saveUninitialized: false,
@@ -67,10 +70,10 @@ app.use(session({
 }));
 app.use(flash());
 
-// passport.initialize() 미들웨어는 요청(req객체)dp passport 설정을 심고, 
-// app.use(passport.initialize());
+// passport.initialize() 미들웨어는 요청(req객체)에 passport 설정을 심고, 
+app.use(passport.initialize());
 // passport.session() 미들웨어는 req.session 객체에 passport 정보를 저장함
-// app.use(passport.session());
+app.use(passport.session());
 
 
 
@@ -101,7 +104,7 @@ const errorLayout = "../views/layout_error";
 
 
 app.use('/about', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'about.html'));
+    res.sendFile(path.join(__dirname, 'public', 'table.html'));
 });
 
 
@@ -188,7 +191,6 @@ app.use((req, res, next) => {
     err.status = 404;
     next(err);
 });
-
 
 
 
