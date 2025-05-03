@@ -1,5 +1,6 @@
 const express = require('express');
-
+const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
+const { Post, User } = require('../models');
 
 const router = express.Router();
 const homeLayout = "../views/layout_home";
@@ -8,18 +9,6 @@ const homeLayout = "../views/layout_home";
 
 
 // const asyncHandler = require("express-async-handler");
-
-
-
-router.get(['/', '/home'], (req, res) => {
-    const locals = {
-        title: "Jump Frog"
-    };    
-    res.render('home', {locals, layout: homeLayout});
-});
-
-
-
 
 router.get('/join', (req, res) => {
     const locals = {
@@ -33,8 +22,16 @@ router.get('/join', (req, res) => {
 
 
 
+router.get(['/', '/home'], (req, res) => {
+    
+    const locals = {
+        title: "Jump Frog",
+        user: req.user
+    };    
+    res.render('home', {locals, layout: homeLayout});
 
-
+});
+    
 
 
 

@@ -82,6 +82,8 @@ app.use(passport.session());
 // 라우터 연결
 app.use("/", require("./routes/home"));
 app.use("/auth", require("./routes/auth"));
+// app.use("/post", require("./routes/post"));
+app.use("/user", require("./routes/user"));
 
 
 
